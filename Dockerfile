@@ -1,4 +1,5 @@
-FROM python:3.9-alpine
+FROM python:3.7-alpine
+
 LABEL Flavio Bartolo
 
 ENV PYTHONUNBUFFERED 1
