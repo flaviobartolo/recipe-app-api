@@ -14,31 +14,31 @@ TAGS_URL = reverse('recipe:tag-list')
 
 
 class PublicTagsApiTests(TestCase):
-    """Test the publicly available tags API"""
+    # The publicly available tags API
 
     def setUp(self):
         self.client = APIClient()
 
     def test_login_required(self):
-        """Test that login required for retrieving tags"""
+        # Test that the login is required for retrieving tags
         res = self.client.get(TAGS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class PrivateTagsApiTests(TestCase):
-    """Test the authorized user tags API"""
+    # Test that the authorized user tags API
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            'test@londonappdev.com',
-            'password'
+            'test@test.test',
+            '12345',
         )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
     def test_retrieve_tags(self):
-        """Test retrieving tags"""
+        # Test retrieving tags
         Tag.objects.create(user=self.user, name='Vegan')
         Tag.objects.create(user=self.user, name='Dessert')
 
@@ -50,10 +50,10 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_tags_limited_to_user(self):
-        """Test that tags returned are for authenticated user"""
+        # Test that tags returned are for the authenticated user
         user2 = get_user_model().objects.create_user(
-            'other@londonappdev.com',
-            'testpass'
+            'test2@test.test',
+            '12345'
         )
         Tag.objects.create(user=user2, name='Fruity')
         tag = Tag.objects.create(user=self.user, name='Comfort Food')
